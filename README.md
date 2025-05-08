@@ -28,4 +28,4 @@ package.json
 Se debe ejecutar npm start desde la carpeta inventarioCDI.
 
 
-se
+
