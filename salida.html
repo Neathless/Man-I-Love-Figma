@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Salida</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 6px; margin-top: 4px; }
+    button { margin-top: 15px; padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <h2>Registrar Salida de Material</h2>
+
+  <label for="producto">Producto:</label>
+  <select id="producto" required></select>
+
+  <label for="cantidad">Cantidad:</label>
+  <input type="number" id="cantidad" min="1" required>
+
+  <label for="usuario">Usuario:</label>
+  <select id="usuario" required></select>
+
+  <label for="observaciones">Observaciones:</label>
+  <textarea id="observaciones" rows="3"></textarea>
+
+  <button id="registrarSalidaBtn">Registrar Salida</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    const { ipcRenderer } = window.electron;
+
+    window.onload = async () => {
+      try {
+        // Obtener productos y usuarios desde el proceso principal (main.js)
+        const productos = await ipcRenderer.invoke('obtener-productos');
+        const usuarios = await ipcRenderer.invoke('obtener-usuarios');
+
+        const selectProd = document.getElementById('producto');
+        productos.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id_producto;
+          opt.textContent = p.nombre;
+          selectProd.appendChild(opt);
+        });
+
+        const selectUsr = document.getElementById('usuario');
+        usuarios.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = u.id_usuario;
+          opt.textContent = u.nombre;
+          selectUsr.appendChild(opt);
+        });
+
+      } catch (error) {
+        console.error('Error al cargar productos o usuarios:', error);
+        document.getElementById('resultado').textContent = 'Hubo un error al cargar los datos.';
+      }
+    };
+
+    // Manejo de la acción al hacer clic en el botón para registrar la salida
+    document.getElementById('registrarSalidaBtn').addEventListener('click', async () => {
+      const id_producto = parseInt(document.getElementById('producto').value);
+      const cantidad = parseInt(document.getElementById('cantidad').value);
+      const id_usuario = parseInt(document.getElementById('usuario').value);
+      const observaciones = document.getElementById('observaciones').value;
+
+      // Validación de los campos antes de intentar registrar
+      if (!id_producto || !cantidad || !id_usuario) {
+        document.getElementById('resultado').textContent = 'Por favor, completa todos los campos requeridos.';
+        return;
+      }
+
+      try {
+        // Llamar a la función para registrar la salida
+        const resultado = await ipcRenderer.invoke('registrar-salida', {
+          id_producto, cantidad, id_usuario, observaciones
+        });
+
+        // Mostrar el mensaje del resultado
+        document.getElementById('resultado').textContent = resultado.mensaje;
+
+      } catch (error) {
+        console.error('Error al registrar salida:', error);
+        document.getElementById('resultado').textContent = 'Hubo un error al registrar la salida.';
+      }
+    });
+  </script>
+</body>
+</html>

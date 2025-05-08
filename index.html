@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menú Principal</title>
+</head>
+<body>
+  <h1>Inventario - Menú Principal</h1>
+  <button id="btnAbrirSalida">Registrar Salida de Material</button>
+
+  <script>
+    const { ipcRenderer } = window.electron;
+
+    // Maneja la acción del botón
+    document.getElementById('btnAbrirSalida').addEventListener('click', () => {
+      ipcRenderer.invoke('abrir-ventana-salida').catch(err => {
+        console.error('Error al intentar abrir la ventana de salida:', err);
+      });
+    });
+  </script>
+</body>
+</html>
