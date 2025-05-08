@@ -9,22 +9,21 @@ En este primer incremento se entrega la primera versión de la base de datos jun
 
 para ejecutar el programa se debe de hacer una carpeta similar a esta:
 
-inventarioCDI
-|
-|/inventario
-|----main.js
-|----preload.js
-|
-|/db
-|----conexion.js
-|
-|/renderer
-|-----index.html
-|-----salida.html
-|
-|package.json
-|
-|
+inventarioCDI {
+/inventario
+main.js
+preload.js
+}
+  {/db
+conexion.js
+}
+  {/renderer
+index.html
+salida.html
+}
+package.json
+
+
 
 Se debe ejecutar npm start desde la carpeta inventarioCDI.
 
